@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: 20 184 166;
+    --color-secondary: 37 99 235;
+    --color-accent: 245 158 11;
+    --color-background: 240 253 250;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+    @apply text-slate-800;
+  }
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+    @apply bg-gradient-to-br from-teal-50 to-blue-50 min-h-screen;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    @apply font-semibold;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-6 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-opacity-50;
+  }
+  
+  .btn-primary {
+    @apply bg-teal-500 text-white hover:bg-teal-600 focus:ring-teal-400;
+  }
+  
+  .btn-secondary {
+    @apply bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500;
+  }
+  
+  .btn-accent {
+    @apply bg-amber-500 text-white hover:bg-amber-600 focus:ring-amber-400;
+  }
+  
+  .container-custom {
+    @apply container mx-auto px-4 md:px-6 lg:px-8;
+  }
+  
+  .card {
+    @apply bg-white rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl overflow-hidden;
+  }
+  
+  .title-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-blue-600;
+  }
+  
+  .animated-bg {
+    @apply relative overflow-hidden;
+  }
+  
+  .animated-bg::before {
+    content: "";
+    @apply absolute inset-0 bg-gradient-to-r from-teal-500/20 to-blue-500/20 opacity-60 pointer-events-none;
+    animation: wave 8s ease-in-out infinite alternate;
+  }
+  
+  @keyframes wave {
+    0% {
+      transform: translateX(-10%) translateY(-10%) rotate(0deg);
+    }
+    100% {
+      transform: translateX(10%) translateY(10%) rotate(3deg);
+    }
+  }
+  
+  .floating {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
+  
+  .service-card {
+    @apply card h-full flex flex-col;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .service-card:hover {
+    transform: translateY(-8px);
+  }
+  
+  .glass-effect {
+    @apply backdrop-blur-sm bg-white/70 border border-white/20;
+  }
+}
