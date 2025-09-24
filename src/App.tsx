@@ -1,4 +1,5 @@
 import  { Suspense, lazy } from 'react';
+const PaymentSuccess = lazy(() => import('./pages/PaymentSuccess'));
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import Navbar from './components/layout/Navbar';
@@ -44,6 +45,7 @@ function App() {
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/cart" element={<Cart />} />
+                <Route path="/payment-success" element={<PaymentSuccess />} />
               </Routes>
             </Suspense>
             

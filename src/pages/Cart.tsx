@@ -3,15 +3,31 @@ import { ArrowLeft, ShoppingCart, Trash2, X } from 'lucide-react';
 import React, { useState } from 'react';
 import { Helmet } from "react-helmet-async";
 import { Link } from 'react-router-dom';
-import { CardForm } from '../components/paiement/CardForm';
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import CheckoutPage from "../components/paiement/CheckoutPage";
 import Button from '../components/ui/Button';
 import { useCart } from '../context/CartContext';
 
 const Cart: React.FC = () => {
+  const [loadingStripe, setLoadingStripe] = useState(false);
+  const handleStripeCheckout = async () => {
+    setLoadingStripe(true);
+    const response = await fetch("http://localhost:3001/api/create-checkout-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: Math.round(total * 100) }),
+    });
+    const data = await response.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      setLoadingStripe(false);
+    }
+  };
   const { items, removeFromCart, clearCart, getCartTotal } = useCart();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-
-  const urlPaiementService:string[]=[];
+  const stripePromise = loadStripe("pk_test_...remplacez_par_votre_cle_publique...");
 
   const subtotal = getCartTotal();
   const tva = subtotal * 0.02;
@@ -72,7 +88,6 @@ const Cart: React.FC = () => {
 
                     <ul className="divide-y divide-slate-200">
                       {items.map((item) => (
-                        urlPaiementService.push(item.service.paiementUrl),
                         <li key={item.service.id} className="p-6 flex flex-col sm:flex-row sm:items-center">
                           <div className="sm:flex-shrink-0 mb-4 sm:mb-0 sm:mr-4">
                             <img
@@ -141,9 +156,20 @@ const Cart: React.FC = () => {
                     <Button
                       variant="primary"
                       className="w-full"
-                      onClick={() => setShowPaymentModal(true)}
+                      onClick={handleStripeCheckout}
+                      disabled={loadingStripe}
                     >
-                      Procéder au paiement
+                      {loadingStripe ? (
+                        <span className="flex items-center justify-center">
+                          <svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                          </svg>
+                          Paiement en cours...
+                        </span>
+                      ) : (
+                        "Procéder au paiement"
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -173,7 +199,9 @@ const Cart: React.FC = () => {
               >
                 <X className="h-6 w-6 text-black bg-white rounded-full" />
               </button>
-              <CardForm urlPaiement={urlPaiementService[0]} amount={formatPrice(total)}/>
+              <Elements stripe={stripePromise}>
+                <CheckoutPage amount={total} />
+              </Elements>
             </motion.div>
           </motion.div>
         )}
